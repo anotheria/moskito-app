@@ -1,0 +1,51 @@
+# Flutter/Dart
+.dart_tool/
+.packages
+build/
+pubspec.lock
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Metadata
+.metadata
+
+# IntelliJ/Android Studio
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# iOS
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Podfile.lock
+ios/Pods/
+ios/Runner.xcworkspace/
+ios/build/
+
+# Android
+android/.gradle/
+android/local.properties
+android/app/build/
+
+# Linux
+linux/build/
+
+# macOS
+macos/build/
+
+# Windows
+windows/build/
+
+# Web
+web/.dart_tool/
+
+# Sensitive files
+*.keystore
+google-services.json
+GoogleService-Info.plist
+.env
