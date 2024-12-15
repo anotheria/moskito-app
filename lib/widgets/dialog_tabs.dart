@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:my_first_app/services/api_service.dart';
+import '../services/api_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:my_first_app/models/history_item.dart';
+import '../models/history_item.dart';
 import '../models/component_info.dart';
+import '../models/threshold.dart';
+import '../models/accumulator.dart';
+import 'chart_dialog.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/services.dart'; // Für Clipboard
 
 class DialogTabs extends StatefulWidget {
   final String componentName;
@@ -15,7 +20,8 @@ class DialogTabs extends StatefulWidget {
 
 class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  List<Map<String, dynamic>> thresholds = [];
+  List<MoSKitoThreshold> thresholds = [];
+  List<MoSKitoAccumulator> accumulators = [];
   List<HistoryItem> historyItems = [];
   ComponentInfo? componentInfo;
   ComponentInfo? connectorInfo;
@@ -55,6 +61,11 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
         setState(() {
           thresholds = data;
         });
+      } else if (tabIndex == 1) { // Accumulators tab
+        final data = await ApiService.fetchAccumulators(widget.componentName);
+        setState(() {
+          accumulators = data;
+        });
       } else if (tabIndex == 3) { // History tab
         final data = await ApiService.fetchHistory(widget.componentName);
         setState(() {
@@ -83,13 +94,24 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Component name
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              widget.componentName,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           TabBar(
             controller: _tabController,
             tabs: const [
-              Tab(icon: FaIcon(FontAwesomeIcons.dotCircle)), // Thresholds
+              Tab(icon: FaIcon(FontAwesomeIcons.circleDot)), // Thresholds
               Tab(icon: FaIcon(FontAwesomeIcons.chartLine)), // Accumulators
-              Tab(icon: FaIcon(FontAwesomeIcons.infoCircle)), // Info
-              Tab(icon: FaIcon(FontAwesomeIcons.history)), // History
+              Tab(icon: FaIcon(FontAwesomeIcons.circleInfo)), // Info
+              Tab(icon: FaIcon(FontAwesomeIcons.clockRotateLeft)), // History
              ],
           ),
           Expanded(
@@ -97,7 +119,7 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
               controller: _tabController,
               children: [
                 _buildThresholdsTab(),
-                Center(child: Text('Content for Tab 2')), // Accumulators
+                _buildAccumulatorsTab(),
                 _buildInfoTab(), // Info
                 _buildHistoryTab(), // History
               ],
@@ -124,24 +146,83 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
         rows: thresholds.map((threshold) {
           return DataRow(
             cells: [
-              DataCell(Text(threshold['name'])),
+              DataCell(Text(threshold.name)),
               DataCell(
                 Container(
                   width: 16, // Size of the circle
                   height: 16,
                   decoration: BoxDecoration(
-                    color: _parseColor(threshold['status']), // Use your _parseColor function
+                    color: _parseColor(threshold.status),
                     shape: BoxShape.circle, // Make it circular
                   ),
                 ),
               ),
-              DataCell(Text(threshold['lastValue'])),
+              DataCell(Text(threshold.lastValue)),
             ],
             onSelectChanged: (selected) {
-            if (selected ?? false) {
-              _showTimestampDialog(threshold['statusChangeTimestamp']);
-            }
-          },
+              if (selected ?? false) {
+                _showThresholdDetailsDialog(threshold);
+              }
+            },
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildAccumulatorsTab() {
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (accumulators.isEmpty) {
+      return const Center(
+        child: Text('No accumulators available'),
+      );
+    }
+
+    return SingleChildScrollView(
+      child: DataTable(
+        showCheckboxColumn: false,
+        columns: const [
+          DataColumn(label: Text('Name')), // Nur eine Spalte für den Namen
+        ],
+        rows: accumulators.map((accumulator) {
+          return DataRow(
+            cells: [
+              DataCell(
+                Text(accumulator.name),
+
+                  onTap: () async {
+                    try {
+                      final chartDataSource = await ApiService.fetchChart(widget.componentName, accumulator.name);
+                      final chartData = chartDataSource.map<FlSpot>((point) {
+                        final timestamp = point.timestamp ?? 0; // Standardwert für Null
+                        final value = point.value != null ? double.parse(point.value) : 0.0;
+                        return FlSpot(timestamp.toDouble(), value);
+                      }).toList();
+                      if (mounted) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => ChartDialog(
+                                title: accumulator.name,
+                                chartData: chartData,
+                              ),
+                          ),
+                        );
+                      }else{
+                        print('Widget is not mounted. Cannot open dialog.');
+                      }
+                    } catch (e) {
+                      ScaffoldMessenger.of(Navigator.of(context).context).showSnackBar(
+                        SnackBar(content: Text('Failed to load chart: $e')),
+                      );
+
+                    }
+
+                },
+              ),
+            ],
           );
         }).toList(),
       ),
@@ -187,25 +268,77 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
     );
   }
 
-  void _showTimestampDialog(String timestamp) {
+  void _showAccumulatorDetails(MoSKitoAccumulator accumulator) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Status Change Timestamp'),
-          content: Text(timestamp),
+          title: Text(accumulator.name),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildDetailRow('Name', accumulator.name),
+            ],
+          ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Close'),
             ),
           ],
         );
       },
     );
   }
+  void _showThresholdDetailsDialog(MoSKitoThreshold threshold) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(threshold.name, textAlign: TextAlign.left),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildDetailRow('Status', threshold.status),
+              _buildDetailRow('Last Value', threshold.lastValue),
+              _buildDetailRow('Timestamp', threshold.statusChangeTimestamp),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.right,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
 
   Widget _buildInfoTab() {
     if (isLoading) {
@@ -246,7 +379,14 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: data.entries.map((entry) {
-        return Padding(
+        return GestureDetector(
+            onTap: () {
+          Clipboard.setData(ClipboardData(text: '${entry.value}'));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Copied "${entry.key}: ${entry.value}" to clipboard')),
+          );
+        },
+        child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
           child: Row(
             children: [
@@ -259,7 +399,7 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
               ),
             ],
           ),
-        );
+        ));
       }).toList(),
     );
   }

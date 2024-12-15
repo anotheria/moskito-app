@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_first_app/models/view.dart';
+import '../models/view.dart';
 import 'dialog_tabs.dart';
 
 class ItemList extends StatelessWidget {
