@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../models/view.dart';
+import '../states/view_state.dart';
 import 'dialog_tabs.dart';
 
 class ItemList extends StatelessWidget {
@@ -25,10 +27,12 @@ class ItemList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final viewItemState = Provider.of<ViewItemState>(context, listen: false);
+
     return ListView.builder(
       itemCount: data.length,
       itemBuilder: (context, index) {
-        final myView = data[index];
+        final MoSKitoView myView = data[index];
         final viewColor = _parseColor(myView.color); // Farbe der MoSKitoView
 
         return ExpansionTile(
@@ -57,6 +61,11 @@ class ItemList extends StatelessWidget {
               },
             );
           }).toList(),
+          onExpansionChanged: (isExpanded) {
+              // Select the view in ViewItemState
+              print("tile state changed $myView.name $isExpanded");
+              viewItemState.selectViewItem(new ViewItem(name: myView.name));
+          },
         );
       },
     );

@@ -91,17 +91,30 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Component name
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          // Component Name with Background
+          Container(
+            width: double.infinity, // Füllt die gesamte Breite
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            decoration: BoxDecoration(
+              color: Color(0xFF6C9FD7), // Hintergrundfarbe
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
+            ),
             child: Text(
               widget.componentName,
+              textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 18,
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
+                color: Colors.white, // Textfarbe
               ),
             ),
           ),
@@ -135,7 +148,9 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
       return const Center(child: CircularProgressIndicator());
     }
 
-    return SingleChildScrollView(
+    return Padding(
+        padding: const EdgeInsets.all(3.0),
+    child: SingleChildScrollView(
       child: DataTable(
         showCheckboxColumn: false,
         columns: const [
@@ -146,7 +161,9 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
         rows: thresholds.map((threshold) {
           return DataRow(
             cells: [
-              DataCell(Text(threshold.name)),
+              DataCell(Text(threshold.name,
+              overflow: TextOverflow.ellipsis, // Hier anwenden, um den Text abzuschneiden
+              )),
               DataCell(
                 Container(
                   width: 16, // Size of the circle
@@ -167,7 +184,7 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
           );
         }).toList(),
       ),
-    );
+    ));
   }
 
   Widget _buildAccumulatorsTab() {
@@ -369,6 +386,11 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
             ),
             const SizedBox(height: 8),
             _buildInfoSection(connectorInfo!.data),
+            const SizedBox(height: 16),
+            const Text(
+              'Tap a value to copy it to the clipboard.',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal, fontStyle: FontStyle.italic),
+            ),
           ],
         ),
       ),
@@ -395,7 +417,8 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               Expanded(
-                child: Text(entry.value.toString()),
+                child: Text(entry.value.toString(),
+                  overflow: TextOverflow.ellipsis),
               ),
             ],
           ),

@@ -17,3 +17,23 @@ class MoSKitoView {
     );
   }
 }
+
+class ViewItem {
+  final String name;
+
+  ViewItem({required this.name});
+
+  factory ViewItem.fromName(String viewName) {
+    return ViewItem (
+      name: viewName,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is ViewItem && runtimeType == other.runtimeType && name == other.name;
+
+  @override
+  int get hashCode => name.hashCode;
+}

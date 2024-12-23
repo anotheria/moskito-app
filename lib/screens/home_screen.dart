@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:moskito_control/main.dart';
+import 'package:provider/provider.dart';
 import '../services/api_service.dart';
 import '../widgets/item_list.dart';
 import '../models/view.dart';
+import 'settings.dart';
 import 'dart:async';
+import '../states/view_state.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -32,10 +35,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> fetchData() async {
     final List<MoSKitoView> _views = await ApiService.fetchViews();
-    print('fetchData returned:');
-    for (var view in _views) {
-      print('MoSKitoView: ${view.name} with ${view.components.length} components and color ${view.color}');
-    }
+    // Convert MoSKitoViews to ViewItems
+    final List<ViewItem> viewItems = _views.map((view) => ViewItem(name: view.name)).toList();
+    print("Fetched views: ${_views.map((view) => view.name).toList()}");
+
+    final viewItemState = Provider.of<ViewItemState>(context, listen: false);
+    viewItemState.setViewItems(viewItems);
+
     setState(() {
       views = _views ?? [];
       isLoading = false;
@@ -52,16 +58,34 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        backgroundColor: Color(0xFF6C9FD7),
+          title: ValueListenableBuilder<String>(
+            valueListenable: selectedSystemNameGlobal,
+            builder: (context, value, child) {
+            return Text('$value :: Statuses'); // Zeigt den aktuellen Systemnamen
+            },
+          )
+
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : ItemList(data: views),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        onPressed: () async {
+          final selectedSystemURL = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SystemSettingsPage()),
+          );
+
+          if (selectedSystemURL != null) {
+            // Aktualisiere den ApiService
+            ApiService.setBaseUrl(selectedSystemURL);
+            fetchData(); // Daten neu laden
+          }
+        },
+        backgroundColor: Color(0xFF6C9FD7),
+        tooltip: 'Settings',
+        child: const Icon(Icons.settings),
       ),
     );
   }

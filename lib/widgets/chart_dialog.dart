@@ -110,7 +110,27 @@ class ChartDialog extends StatelessWidget {
                       dotData: FlDotData(show: false),
                     ),
                   ],
+
+                lineTouchData: LineTouchData(
+                  touchTooltipData: LineTouchTooltipData(
+                    tooltipMargin: 8,
+                    fitInsideHorizontally: true,
+                    fitInsideVertically: true,
+                    getTooltipItems: (List<LineBarSpot> touchedSpots) {
+                      return touchedSpots.map((touchedSpot) {
+                        return LineTooltipItem(
+                          formatYAxisLabel(touchedSpot.y),
+                          const TextStyle(color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            //backgroundColor: Colors.grey, // Adjust tooltip background color here
+                          ),
+                        );
+                      }).toList();
+                    },
+                  ),
                 ),
+                ),
+
               ),
 
             ),
@@ -177,7 +197,7 @@ class ChartDialog extends StatelessWidget {
     }
 
     // Intervall als 25% des Zeitbereichs
-    double interval = timeRange * 0.25;
+    double interval = timeRange * 0.40;
 
     // Intervall auf sinnvollen Wert runden (z. B. nächste 5 Minuten)
     double roundedInterval = interval / (60 * 1000); // In Minuten
@@ -201,9 +221,11 @@ class ChartDialog extends StatelessWidget {
     }
 
     // Intervall als 25% des Y-Bereichs
-    double interval = range * 0.25;
+    double interval = range * 0.33;
 
     // Auf einen sinnvollen Wert runden (z. B. nächste 10 Einheiten)
     return (interval / 10).ceil() * 10; // Runden auf 10er-Schritte
   }
+
+
 }
