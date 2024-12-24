@@ -28,4 +28,28 @@ class MultiChartPoint{
       values: (json['values'] as List<dynamic>).map((e) => e as String).toList(),
     );
   }
+
+  @override
+  String toString() {
+    return 'Point {caption: $caption, timestamp: $timestamp, values: $values}';
+  }
+}
+
+class MultiChart{
+  final String name;
+  final List<MultiChartPoint> points;
+
+  MultiChart({required this.name, required this.points});
+
+  factory MultiChart.fromJson(Map<String, dynamic> json) {
+    return MultiChart(
+      name: json['name'] as String,
+      points: (json['points'] as List<dynamic>).map((e) => MultiChartPoint.fromJson(e)).toList(),
+    );
+  }
+
+  @override
+  String toString() {
+    return 'MultiChart{name: $name, points: $points}';
+  }
 }

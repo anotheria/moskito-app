@@ -37,7 +37,6 @@ class _MyHomePageState extends State<MyHomePage> {
     final List<MoSKitoView> _views = await ApiService.fetchViews();
     // Convert MoSKitoViews to ViewItems
     final List<ViewItem> viewItems = _views.map((view) => ViewItem(name: view.name)).toList();
-    print("Fetched views: ${_views.map((view) => view.name).toList()}");
 
     final viewItemState = Provider.of<ViewItemState>(context, listen: false);
     viewItemState.setViewItems(viewItems);

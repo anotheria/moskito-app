@@ -28,6 +28,23 @@ class ApiService {
     await prefs.setString(_urlKey, newUrl);
   }
 
+  static Future<List<MultiChart>> fetchChartsForView(String viewName) async{
+    final url = Uri.parse('$baseUrl/charts/points/$viewName');
+    print("Calling $url");
+
+    final response = await http.get(url);
+
+    print("Response: ${response.body}");
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final chartsList = data['charts'] as List<dynamic>;
+      return chartsList.map((json) => MultiChart.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load charts: ${response.statusCode}');
+    }
+  }
+
 
   static Future<List<HistoryItem>> fetchGlobalHistory() async {
     final url = Uri.parse('$baseUrl/history');

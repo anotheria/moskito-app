@@ -14,7 +14,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
     MyHomePage(), // Dein Home Screen
     HistoryScreen(), // Dein History Screen
-    DummyScreen(), // Der Dummy-Screen
+    ChartScreen(), // Der Dummy-Screen
   ];
 
   void _onItemTapped(int index) {

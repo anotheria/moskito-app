@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../models/view.dart';
 import '../states/view_state.dart';
+import 'package:moskito_control/main.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
@@ -66,8 +67,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF6C9FD7),
-        title: const Text("History"),
+          backgroundColor: Color(0xFF6C9FD7),
+          title: ValueListenableBuilder<String>(
+            valueListenable: selectedSystemNameGlobal,
+            builder: (context, value, child) {
+              return Text('$value :: History'); // Zeigt den aktuellen Systemnamen
+            },
+          )
+
       ),
       body: Column(
         children: [
