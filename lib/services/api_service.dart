@@ -30,11 +30,8 @@ class ApiService {
 
   static Future<List<MultiChart>> fetchChartsForView(String viewName) async{
     final url = Uri.parse('$baseUrl/charts/points/$viewName');
-    print("Calling $url");
 
     final response = await http.get(url);
-
-    print("Response: ${response.body}");
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);

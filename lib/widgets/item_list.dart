@@ -53,7 +53,7 @@ class ItemList extends StatelessWidget {
               ),
               title: Text(component.name),
               onTap: () {
-                // Öffne den Dialog für diese Komponente
+                // Open the info dialog (accumulators, thresholds, info etc)
                 showDialog(
                   context: context,
                   builder: (context) => DialogTabs(componentName: component.name),
@@ -63,7 +63,6 @@ class ItemList extends StatelessWidget {
           }).toList(),
           onExpansionChanged: (isExpanded) {
               // Select the view in ViewItemState
-              print("tile state changed $myView.name $isExpanded");
               viewItemState.selectViewItem(new ViewItem(name: myView.name));
           },
         );

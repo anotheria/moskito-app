@@ -31,7 +31,11 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
+
+    //TODO actually we should check for capabilities of the component here first.
+
     _tabController = TabController(length: 4, vsync: this);
+
 
     // Add a listener to detect tab changes
     _tabController.addListener(() {

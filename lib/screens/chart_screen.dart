@@ -46,7 +46,6 @@ class _ChartScreenState extends State<ChartScreen> {
     String selectedItemName = viewItemState.getSelectedViewName();
 
     final _charts = await ApiService.fetchChartsForView(selectedItemName);
-    print("Loaded charts: $_charts");
 
     setState(() {
       charts = _charts ?? [];
