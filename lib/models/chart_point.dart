@@ -38,18 +38,20 @@ class MultiChartPoint{
 class MultiChart{
   final String name;
   final List<MultiChartPoint> points;
+  final List<String> lineNames;
 
-  MultiChart({required this.name, required this.points});
+  MultiChart({required this.name, required this.points, required this.lineNames});
 
   factory MultiChart.fromJson(Map<String, dynamic> json) {
     return MultiChart(
       name: json['name'] as String,
       points: (json['points'] as List<dynamic>).map((e) => MultiChartPoint.fromJson(e)).toList(),
+      lineNames: (json['lineNames'] as List<dynamic>).map((e) => e as String).toList(),
     );
   }
 
   @override
   String toString() {
-    return 'MultiChart{name: $name, points: $points}';
+    return 'MultiChart{name: $name, points: $points, lineNames: $lineNames}';
   }
 }

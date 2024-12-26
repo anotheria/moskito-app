@@ -22,6 +22,28 @@ class _ChartScreenState extends State<ChartScreen> {
   List<MultiChart> charts = [];
   bool isLoading = true;
   Timer? _timer;
+  final colors = [
+    Colors.blue,
+    Colors.red,
+    Colors.green,
+    Colors.orange,
+    Colors.purple,
+    Colors.teal,
+    Colors.brown,
+    Colors.pink,
+    Colors.amber,
+    Colors.cyan,
+    Colors.indigo,
+    Colors.lime,
+    Colors.deepOrange,
+    Colors.deepPurple,
+    Colors.lightBlue,
+    Colors.lightGreen,
+    Colors.yellow,
+    Colors.grey,
+    Colors.blueGrey,
+
+  ];
 
   @override
   void initState() {
@@ -125,11 +147,23 @@ class _ChartScreenState extends State<ChartScreen> {
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
                                 Text(
                                   charts[index].name,
                                   style: const TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold),
                                 ),
+                                  IconButton(
+                                    icon:  const Icon(Icons.info_outline, color: Colors.grey),
+                                    onPressed: () {
+                                      _showInfoDialog(context, charts[index]);
+                                    },
+                                  ),
+
+                                ],
+                              ),
                                 SizedBox(height: 300,
                                   child: MultiChartWidget(chart: charts[index]),
                                 ),
@@ -140,6 +174,45 @@ class _ChartScreenState extends State<ChartScreen> {
             ),
     )],
       ),
+    );
+  }
+
+
+  void _showInfoDialog(BuildContext context, MultiChart chart) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(chart.name),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(chart.lineNames.length, (index) {
+              return Row(
+                children: [
+                  Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: colors[index % colors.length],
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(chart.lineNames[index]),
+                ],
+              );
+            }),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("Close"),
+            ),
+          ],
+        );
+      },
     );
   }
 }
