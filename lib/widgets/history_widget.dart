@@ -26,25 +26,11 @@ class HistoryWidget extends StatelessWidget {
                     children: [
                       Text(item.formatedTimestamp),
                       const SizedBox(width: 16),
-                      Container(
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          color: AppUtils.parseColor(item.oldStatus),
-                          shape: BoxShape.circle,
-                        ),
-                      ),
+                      AppUtils.getStatusCircle(item.oldStatus),
                       const SizedBox(width: 8),
-                      const Icon(Icons.arrow_forward, size: 12),
+                      const Icon(Icons.arrow_forward, size: 14),
                       const SizedBox(width: 8),
-                      Container(
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          color: AppUtils.parseColor(item.newStatus),
-                          shape: BoxShape.circle,
-                        ),
-                      ),
+                      AppUtils.getStatusCircle(item.newStatus),
                       const SizedBox(width: 16),
                       Text(item.componentName),
                     ],
@@ -68,32 +54,22 @@ class HistoryWidget extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
+              Padding(padding: EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
                 children: [
-                  Container(
-                    width: 16,
-                    height: 16,
-                    decoration: BoxDecoration(
-                      color: AppUtils.parseColor(item.oldStatus),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
+                  AppUtils.getStatusCircle(item.oldStatus),
                   const SizedBox(width: 16),
-                  const Icon(Icons.arrow_forward),
+                  const Icon(Icons.arrow_forward, size: 14,),
                   const SizedBox(width: 16),
-                  Container(
-                    width: 16,
-                    height: 16,
-                    decoration: BoxDecoration(
-                      color: AppUtils.parseColor(item.newStatus),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
+                  AppUtils.getStatusCircle(item.newStatus),
                 ],
-              ),
-              Text("Old Messages: ${item.oldMessages.join(", ")}"),
-              Text("New Messages: ${item.newMessages.join(", ")}"),
-              Text("Timestamp: ${item.isoTimestamp}"),
+              )),
+        Padding(padding: EdgeInsets.symmetric(vertical: 4.0),
+            child: Text("Old Messages: ${item.oldMessages.join(", ")}"),),
+        Padding(padding: EdgeInsets.symmetric(vertical: 4.0),
+              child: Text("New Messages: ${item.newMessages.join(", ")}"),),
+        Padding(padding: EdgeInsets.symmetric(vertical: 4.0),
+              child: Text("Timestamp: ${item.isoTimestamp}"),)
             ],
           ),
           actions: [

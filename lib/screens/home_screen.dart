@@ -9,8 +9,8 @@ import 'system_selection.dart';
 import 'dart:async';
 import '../states/view_state.dart';
 
-class MyHomePage extends BasePage {
-  const MyHomePage({Key? key})
+class HomeScreen extends BasePage {
+  const HomeScreen({Key? key})
       : super(
     key: key,
     helpFilePath: 'assets/help/home.html',
@@ -18,10 +18,10 @@ class MyHomePage extends BasePage {
   );
 
   @override
-  BasePageState<MyHomePage> createState() => _MyHomePageState();
+  BasePageState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _MyHomePageState extends BasePageState<MyHomePage> {
+class _HomeScreenState extends BasePageState<HomeScreen> {
   List<MoSKitoView> views = [];
   bool isLoading = true;
   Timer? _timer;

@@ -13,10 +13,10 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    MyHomePage(), // Dein Home Screen
+    HomeScreen(), // Dein Home Screen
     HistoryScreen(), // Dein History Screen
     ChartScreen(), // Der Dummy-Screen
-    SettingsPage(), // Der Dummy-Screen
+    SettingsScreen(), // Der Dummy-Screen
   ];
 
   void _onItemTapped(int index) {

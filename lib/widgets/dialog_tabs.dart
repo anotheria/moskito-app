@@ -174,15 +174,7 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
                 Row(
                   children: [
 
-                Container(
-                  width: 12, // Size of the circle
-                  height: 12,
-                  decoration: BoxDecoration(
-                    color: AppUtils.parseColor(threshold.status),
-                    shape: BoxShape.circle, // Make it circular
-                  ),
-
-                ),
+                  AppUtils.getStatusCircle(threshold.status),
                   Text(' '+threshold.name,
                     overflow: TextOverflow.ellipsis, // Hier anwenden, um den Text abzuschneiden
                   )
@@ -309,26 +301,17 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                const SizedBox(width: 10),
+                AppUtils.getStatusCircle(item.oldStatus),
+                const SizedBox(width: 4),
+                const Icon(Icons.arrow_forward, size: 14,), // Arrow icon
+                const SizedBox(width: 4),
+                AppUtils.getStatusCircle(item.newStatus),
+                const SizedBox(width: AppUtils.circleBoxSize), // Space between status circles
                 Text(item.isoTimestamp), // Display the timestamp
-                Container(
-                  width: 16,
-                  height: 16,
-                  decoration: BoxDecoration(
-                    color: AppUtils.parseColor(item.oldStatus), // Map the old status to a color
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const Icon(Icons.arrow_forward), // Arrow icon
-                Container(
-                  width: 16,
-                  height: 16,
-                  decoration: BoxDecoration(
-                    color: AppUtils.parseColor(item.newStatus), // Map the new status to a color
-                    shape: BoxShape.circle,
-                  ),
-                ),
+
               ],
             ),
           );
@@ -347,7 +330,7 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildDetailRow('Status', threshold.status),
+              _buildDetailRowWithWidget('Status', AppUtils.getStatusCircle(threshold.status)),
               _buildDetailRow('Last Value', threshold.lastValue),
               _buildDetailRow('Timestamp', threshold.statusChangeTimestamp),
             ],
@@ -384,6 +367,23 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
     );
   }
 
+  Widget _buildDetailRowWithWidget(String label, Widget widget) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          Flexible(
+            child: widget
+          ),
+        ],
+      ),
+    );
+  }
 
 
   Widget _buildInfoTab() {

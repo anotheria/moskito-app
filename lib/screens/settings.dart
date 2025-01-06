@@ -4,8 +4,8 @@ import '../services/selectable_system_service.dart';
 import '../models/selectable_system.dart';
 import 'base_page.dart';
 
-class SettingsPage extends BasePage {
-  const SettingsPage({Key? key})
+class SettingsScreen extends BasePage {
+  const SettingsScreen({Key? key})
       : super(
     key: key,
     helpFilePath: 'assets/help/settings.html',
@@ -14,10 +14,10 @@ class SettingsPage extends BasePage {
   );
 
   @override
-  _SettingsPageState createState() => _SettingsPageState();
+  _SettingsScreenState createState() => _SettingsScreenState();
 }
 
-class _SettingsPageState extends BasePageState<SettingsPage> {
+class _SettingsScreenState extends BasePageState<SettingsScreen> {
   final SelectableSystemService _service = SelectableSystemService();
   List<SelectableSystem> _systems = [];
   bool isLoading = false;
