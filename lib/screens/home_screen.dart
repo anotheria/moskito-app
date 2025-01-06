@@ -4,18 +4,24 @@ import 'package:provider/provider.dart';
 import '../services/api_service.dart';
 import '../widgets/item_list.dart';
 import '../models/view.dart';
-import 'settings.dart';
+import 'base_page.dart';
+import 'system_selection.dart';
 import 'dart:async';
 import '../states/view_state.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+class MyHomePage extends BasePage {
+  const MyHomePage({Key? key})
+      : super(
+    key: key,
+    helpFilePath: 'assets/help/home.html',
+    appBarTitle: 'Statuses',
+  );
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  BasePageState<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends BasePageState<MyHomePage> {
   List<MoSKitoView> views = [];
   bool isLoading = true;
   Timer? _timer;
@@ -54,18 +60,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildPageContent(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFF6C9FD7),
-          title: ValueListenableBuilder<String>(
-            valueListenable: selectedSystemNameGlobal,
-            builder: (context, value, child) {
-            return Text('$value :: Statuses'); // Zeigt den aktuellen Systemnamen
-            },
-          )
-
-      ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : ItemList(data: views),
@@ -73,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () async {
           final selectedSystemURL = await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const SystemSettingsPage()),
+            MaterialPageRoute(builder: (context) => const SystemSelectionPage()),
           );
 
           if (selectedSystemURL != null) {
@@ -84,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         backgroundColor: Color(0xFF6C9FD7),
         tooltip: 'Settings',
-        child: const Icon(Icons.settings),
+        child: const Icon(Icons.swap_horiz_outlined),
       ),
     );
   }

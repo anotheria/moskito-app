@@ -12,6 +12,11 @@ class ChartPoint {
       value: (json['values'][0] as String),
     );
   }
+
+  @override
+  String toString() {
+    return 'ChartPoint{caption: $caption, timestamp: $timestamp, value: $value}';
+  }
 }
 
 class MultiChartPoint{

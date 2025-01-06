@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moskito_control/screens/base_page.dart';
 import 'package:moskito_control/widgets/history_widget.dart';
 import 'dart:async';
 import 'package:moskito_control/services/api_service.dart';
@@ -7,16 +8,20 @@ import 'package:provider/provider.dart';
 
 import '../models/view.dart';
 import '../states/view_state.dart';
-import 'package:moskito_control/main.dart';
 
-class HistoryScreen extends StatefulWidget {
-  const HistoryScreen({super.key});
+class HistoryScreen extends BasePage {
+  const HistoryScreen({Key? key})
+      : super(
+    key: key,
+    helpFilePath: 'assets/help/history.html',
+    appBarTitle: 'History',
+  );
 
   @override
-  State<HistoryScreen> createState() => _HistoryScreenState();
+  BasePageState<HistoryScreen> createState() => _HistoryScreenState();
 }
 
-class _HistoryScreenState extends State<HistoryScreen> {
+class _HistoryScreenState extends BasePageState<HistoryScreen> {
   List<HistoryItem> historyItems = [];
   bool isLoading = true;
   Timer? _timer;
@@ -62,21 +67,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildPageContent(BuildContext context) {
     final viewItemState = Provider.of<ViewItemState>(context, listen: false);
 
-    return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Color(0xFF6C9FD7),
-          title: ValueListenableBuilder<String>(
-            valueListenable: selectedSystemNameGlobal,
-            builder: (context, value, child) {
-              return Text('$value :: History'); // Zeigt den aktuellen Systemnamen
-            },
-          )
-
-      ),
-      body: Column(
+    return Column(
         children: [
           // Dropdown for selecting a view
           Padding(
@@ -122,7 +116,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 : HistoryWidget(data: historyItems),
           ),
         ],
-      ),
-    );
+      );
   }
 }

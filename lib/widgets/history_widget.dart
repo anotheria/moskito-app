@@ -1,27 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:moskito_control/models/history_item.dart';
+import 'package:moskito_control/utils/utils.dart';
 
 class HistoryWidget extends StatelessWidget {
   final List<HistoryItem> data;
 
   const HistoryWidget({super.key, required this.data});
 
-  Color _parseColor(String colorString) {
-    switch (colorString) {
-      case 'RED':
-        return Colors.red;
-      case 'GREEN':
-        return Colors.green;
-      case 'ORANGE':
-        return Colors.orange;
-      case 'YELLOW':
-        return Colors.yellow;
-      case 'PURPLE':
-        return Colors.purple;
-      default:
-        return Colors.grey;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +30,7 @@ class HistoryWidget extends StatelessWidget {
                         width: 12,
                         height: 12,
                         decoration: BoxDecoration(
-                          color: _parseColor(item.oldStatus),
+                          color: AppUtils.parseColor(item.oldStatus),
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -56,7 +41,7 @@ class HistoryWidget extends StatelessWidget {
                         width: 12,
                         height: 12,
                         decoration: BoxDecoration(
-                          color: _parseColor(item.newStatus),
+                          color: AppUtils.parseColor(item.newStatus),
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -89,7 +74,7 @@ class HistoryWidget extends StatelessWidget {
                     width: 16,
                     height: 16,
                     decoration: BoxDecoration(
-                      color: _parseColor(item.oldStatus),
+                      color: AppUtils.parseColor(item.oldStatus),
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -100,7 +85,7 @@ class HistoryWidget extends StatelessWidget {
                     width: 16,
                     height: 16,
                     decoration: BoxDecoration(
-                      color: _parseColor(item.newStatus),
+                      color: AppUtils.parseColor(item.newStatus),
                       shape: BoxShape.circle,
                     ),
                   ),

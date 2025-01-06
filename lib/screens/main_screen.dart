@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'home_screen.dart'; // Dein Home Screen
 import 'history_screen.dart'; // Dein History Screen
 import 'chart_screen.dart'; // Der Dummy-Screen
+import 'settings.dart'; // Der Dummy-Screen
 
 class MainScreen extends StatefulWidget {
   @override
@@ -15,6 +16,7 @@ class _MainScreenState extends State<MainScreen> {
     MyHomePage(), // Dein Home Screen
     HistoryScreen(), // Dein History Screen
     ChartScreen(), // Der Dummy-Screen
+    SettingsPage(), // Der Dummy-Screen
   ];
 
   void _onItemTapped(int index) {
@@ -28,6 +30,7 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: const [
@@ -42,6 +45,10 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart),
             label: 'Charts',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
       ),

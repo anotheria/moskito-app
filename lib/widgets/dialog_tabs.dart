@@ -5,6 +5,7 @@ import '../models/history_item.dart';
 import '../models/component_info.dart';
 import '../models/threshold.dart';
 import '../models/accumulator.dart';
+import '../utils/utils.dart';
 import 'chart_dialog.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/services.dart'; // Für Clipboard
@@ -94,16 +95,18 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+      return
+        Dialog(
+            shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // Component Name with Background
           Container(
-            width: double.infinity, // Füllt die gesamte Breite
+            width: double.infinity, // Full width
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             decoration: BoxDecoration(
               color: Color(0xFF6C9FD7), // Hintergrundfarbe
@@ -116,7 +119,7 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
               widget.componentName,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Colors.white, // Textfarbe
               ),
@@ -144,7 +147,8 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
           ),
         ],
       ),
-    );
+    )
+    ;
   }
 
   Widget _buildThresholdsTab() {
@@ -153,31 +157,39 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
     }
 
     return Padding(
-        padding: const EdgeInsets.all(3.0),
+        padding: const EdgeInsets.all(2.0),
     child: SingleChildScrollView(
       child: DataTable(
         showCheckboxColumn: false,
+          columnSpacing: 0,
+
         columns: const [
           DataColumn(label: Text('Name')),
-          DataColumn(label: Text('Status')),
           DataColumn(label: Text('Value')),
         ],
         rows: thresholds.map((threshold) {
           return DataRow(
             cells: [
-              DataCell(Text(threshold.name,
-              overflow: TextOverflow.ellipsis, // Hier anwenden, um den Text abzuschneiden
-              )),
               DataCell(
+                Row(
+                  children: [
+
                 Container(
-                  width: 16, // Size of the circle
-                  height: 16,
+                  width: 12, // Size of the circle
+                  height: 12,
                   decoration: BoxDecoration(
-                    color: _parseColor(threshold.status),
+                    color: AppUtils.parseColor(threshold.status),
                     shape: BoxShape.circle, // Make it circular
                   ),
+
+                ),
+                  Text(' '+threshold.name,
+                    overflow: TextOverflow.ellipsis, // Hier anwenden, um den Text abzuschneiden
+                  )
+                  ]
                 ),
               ),
+
               DataCell(Text(threshold.lastValue)),
             ],
             onSelectChanged: (selected) {
@@ -203,23 +215,47 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
     }
 
     return SingleChildScrollView(
-      child: DataTable(
-        showCheckboxColumn: false,
-        columns: const [
-          DataColumn(label: Text('Name')), // Nur eine Spalte für den Namen
-        ],
-        rows: accumulators.map((accumulator) {
-          return DataRow(
-            cells: [
-              DataCell(
-                Text(accumulator.name),
+      child: Column(
+        children: [
+
+          const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+
+              children: [
+                Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child:
+                      Text('Chart name',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      )
+                )
+              ]), // Nur eine Spalte für den Namen
+         ...accumulators.map((accumulator) {
+          return
+                GestureDetector(
+                child:
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  child:
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(accumulator.name,
+                        style: TextStyle(overflow: TextOverflow.ellipsis),
+                      ),
+
+                    ],
+                  ),
+                ),
 
                   onTap: () async {
                     try {
                       final chartDataSource = await ApiService.fetchChart(widget.componentName, accumulator.name);
                       final chartData = chartDataSource.map<FlSpot>((point) {
                         final timestamp = point.timestamp ?? 0; // Standardwert für Null
-                        final value = point.value != null ? double.parse(point.value) : 0.0;
+                        final value = point.value != null ?
+                            point.value == 'NaN' ? 0.0 : double.parse(point.value)
+                            : 0.0;
                         return FlSpot(timestamp.toDouble(), value);
                       }).toList();
                       if (mounted) {
@@ -242,11 +278,11 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
                     }
 
                 },
-              ),
-            ],
-          );
+              );
+
+
         }).toList(),
-      ),
+        ]),
     );
   }
 
@@ -257,7 +293,19 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
 
     return SingleChildScrollView(
       child: Column(
-        children: historyItems.map((item) {
+        children: [
+          Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child:
+                Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        const Text('History',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          )
+                      ]),
+            ),
+          ...historyItems.map((item) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Row(
@@ -268,7 +316,7 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
                   width: 16,
                   height: 16,
                   decoration: BoxDecoration(
-                    color: _parseColor(item.oldStatus), // Map the old status to a color
+                    color: AppUtils.parseColor(item.oldStatus), // Map the old status to a color
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -277,7 +325,7 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
                   width: 16,
                   height: 16,
                   decoration: BoxDecoration(
-                    color: _parseColor(item.newStatus), // Map the new status to a color
+                    color: AppUtils.parseColor(item.newStatus), // Map the new status to a color
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -285,33 +333,10 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
             ),
           );
         }).toList(),
-      ),
+      ]),
     );
   }
 
-  void _showAccumulatorDetails(MoSKitoAccumulator accumulator) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(accumulator.name),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildDetailRow('Name', accumulator.name),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Close'),
-            ),
-          ],
-        );
-      },
-    );
-  }
   void _showThresholdDetailsDialog(MoSKitoThreshold threshold) {
     showDialog(
       context: context,
@@ -431,21 +456,5 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
     );
   }
 
-  Color _parseColor(String colorString) {
-    colorString = colorString.toLowerCase();
-    switch (colorString) {
-      case 'red':
-        return Colors.red;
-      case 'green':
-        return Colors.green;
-      case 'orange':
-        return Colors.orange;
-      case 'yellow':
-        return Colors.yellow;
-      case 'purple':
-        return Colors.purple;
-      default:
-        return Colors.grey;
-    }
-  }
+
 }

@@ -1,72 +1,136 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../main.dart';
+import 'dart:async';
+import '../services/selectable_system_service.dart';
+import '../models/selectable_system.dart';
+import 'base_page.dart';
 
-class SystemSettingsPage extends StatefulWidget {
-  const SystemSettingsPage({Key? key}) : super(key: key);
+class SettingsPage extends BasePage {
+  const SettingsPage({Key? key})
+      : super(
+    key: key,
+    helpFilePath: 'assets/help/settings.html',
+    appBarTitle: 'Settings',
+    showSystem: false,
+  );
 
   @override
-  State<SystemSettingsPage> createState() => _SystemSettingsPageState();
+  _SettingsPageState createState() => _SettingsPageState();
 }
 
-class _SystemSettingsPageState extends State<SystemSettingsPage> {
-  final List<Map<String, String>> systems = [
-    {"Name": "TCL", "URL": "https://moskito-control.thecasuallounge.com/api/v2"},
-    {"Name": "SXT", "URL": "https://moskito-control.cherotic.com/api/v2"},
-    {"Name": "FCT", "URL": "https://moskito-control.neueliebe.info/api/v2"},
-    {"Name": "Sites", "URL": "https://moskito-control-websites.anotheria-services.net/api/v2"},
-    {"Name": "BGS", "URL": "https://burgershop-control.demo.moskito.org/api/v2"},
-  ];
-
-  String? selectedSystemName;
+class _SettingsPageState extends BasePageState<SettingsPage> {
+  final SelectableSystemService _service = SelectableSystemService();
+  List<SelectableSystem> _systems = [];
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _loadSelectedSystem();
+    fetchData();
   }
 
-  Future<void> _loadSelectedSystem() async {
-    final prefs = await SharedPreferences.getInstance();
+  Future<void> fetchData() async {
     setState(() {
-      selectedSystemName = prefs.getString('selectedSystemName');
+      isLoading = true;
+    });
+    List<SelectableSystem> systems = await _service.getSystems();
+    if (systems.isEmpty) {
+      await addSystem("Demo", "https://burgershop-control.demo.moskito.org/api/v2");
+      systems = await _service.getSystems();
+    }
+    setState(() {
+      _systems = systems;
+      isLoading = false;
     });
   }
 
-  Future<void> _saveSelectedSystem(String name, String url) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('selectedSystemName', name);
-    await prefs.setString('baseUrl', url);
-    setState(() {
-      selectedSystemName = name;
-      selectedSystemNameGlobal.value = name;
-    });
+  Future<void> addSystem(String name, String url) async {
+    final newSystem = SelectableSystem(name: name, url: url);
+    await _service.addSystem(newSystem);
+    await fetchData();
   }
 
+  Future<void> deleteSystem(String name) async {
+    await _service.removeSystem(name);
+    await fetchData();
+  }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFF6C9FD7),
-        title: const Text("Select System"),
-      ),
-      body: ListView.builder(
-        itemCount: systems.length,
-        itemBuilder: (context, index) {
-          final system = systems[index];
-          return ListTile(
-            title: Text(system['Name']!),
-            trailing: selectedSystemName == system["Name"]
-                ? const Icon(Icons.check, color: Colors.green)
-                : null,
-            onTap: () {
-              _saveSelectedSystem(system["Name"]!, system["URL"]!);
-              Navigator.pop(context, system["URL"]);
+  Widget buildPageContent(BuildContext context) {
+    return isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
+            itemCount: _systems.length,
+            itemBuilder: (context, index) {
+              final system = _systems[index];
+              return ListTile(
+                title: Text(system.name),
+                subtitle: Text(system.url),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: () async {
+                    await deleteSystem(system.name);
+                  },
+                ),
+              );
             },
-          );
-        },
-      ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () => _showAddSystemDialog(context),
+            child: const Text('Add System'),
+          ),
+        ),
+      ],
     );
   }
-}
+
+  void _showAddSystemDialog(BuildContext context) {
+    final nameController = TextEditingController();
+    final urlController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add System'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(labelText: 'System Name'),
+              ),
+              TextField(
+                controller: urlController,
+                decoration: const InputDecoration(labelText: 'System URL'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final name = nameController.text;
+                final url = urlController.text;
+
+                if (name.isNotEmpty && url.isNotEmpty) {
+                  await addSystem(name, url);
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }//_showAddSystemDialog
+}//_SettingsPageState

@@ -2,28 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/view.dart';
 import '../states/view_state.dart';
+import '../utils/utils.dart';
 import 'dialog_tabs.dart';
 
 class ItemList extends StatelessWidget {
   final List<MoSKitoView> data;
   const ItemList({super.key, required this.data});
-
-  Color _parseColor(String colorString) {
-    switch (colorString) {
-      case 'RED':
-        return Colors.red;
-      case 'GREEN':
-        return Colors.green;
-      case 'ORANGE':
-        return Colors.orange;
-      case 'YELLOW':
-        return Colors.yellow;
-      case 'PURPLE':
-        return Colors.purple;
-      default:
-        return Colors.grey;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +17,7 @@ class ItemList extends StatelessWidget {
       itemCount: data.length,
       itemBuilder: (context, index) {
         final MoSKitoView myView = data[index];
-        final viewColor = _parseColor(myView.color); // Farbe der MoSKitoView
+        final viewColor = AppUtils.parseColor(myView.color); // Farbe der MoSKitoView
 
         return ExpansionTile(
           leading: Icon(
@@ -49,7 +33,7 @@ class ItemList extends StatelessWidget {
             return ListTile(
               leading: Icon(
                 Icons.circle,
-                color: _parseColor(component.color),
+                color: AppUtils.parseColor(component.color),
               ),
               title: Text(component.name),
               onTap: () {

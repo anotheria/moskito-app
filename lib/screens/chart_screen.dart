@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:moskito_control/models/chart_point.dart';
-import 'package:moskito_control/widgets/history_widget.dart';
+import 'package:moskito_control/screens/base_page.dart';
 import 'dart:async';
 import 'package:moskito_control/services/api_service.dart';
-import 'package:moskito_control/models/history_item.dart';
 import 'package:provider/provider.dart';
 
 import '../models/view.dart';
@@ -11,14 +10,19 @@ import '../states/view_state.dart';
 import 'package:moskito_control/main.dart';
 import '../widgets/chart_widget.dart';
 
-class ChartScreen extends StatefulWidget {
-  const ChartScreen({super.key});
+class ChartScreen extends BasePage {
+  const ChartScreen({Key? key})
+      : super(
+    key: key,
+    helpFilePath: 'assets/help/charts.html',
+    appBarTitle: 'Charts',
+  );
 
   @override
-  State<ChartScreen> createState() => _ChartScreenState();
+  BasePageState<ChartScreen> createState() => _ChartScreenState();
 }
 
-class _ChartScreenState extends State<ChartScreen> {
+class _ChartScreenState extends BasePageState<ChartScreen> {
   List<MultiChart> charts = [];
   bool isLoading = true;
   Timer? _timer;
@@ -48,18 +52,18 @@ class _ChartScreenState extends State<ChartScreen> {
   @override
   void initState() {
     super.initState();
-    _startAutoRefresh(); // Starte den Timer
-  }
+    _startAutoRefresh(); // Start the timer
+  }//initState
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    fetchData(); // Daten laden, wenn Abhängigkeiten verfügbar sind
+    fetchData(); // Load data.
   }
 
   @override
   void dispose() {
-    _timer?.cancel(); // Beende den Timer beim Verlassen des Widgets
+    _timer?.cancel(); // Remove timer when closed.
     super.dispose();
   }
 
@@ -77,26 +81,15 @@ class _ChartScreenState extends State<ChartScreen> {
 
   void _startAutoRefresh() {
     _timer = Timer.periodic(const Duration(seconds: 60), (timer) {
-      fetchData(); // Aktualisiere die Daten alle 60 Sekunden
+      fetchData(); // Refresh data every 60 seconds
     });
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildPageContent(BuildContext context) {
     final viewItemState = Provider.of<ViewItemState>(context, listen: false);
 
-    return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Color(0xFF6C9FD7),
-          title: ValueListenableBuilder<String>(
-            valueListenable: selectedSystemNameGlobal,
-            builder: (context, value, child) {
-              return Text('$value :: Charts'); // Zeigt den aktuellen Systemnamen
-            },
-          )
-
-      ),
-      body: Column(
+    return Column(
         children: [
           // Dropdown for selecting a view
           Padding(
@@ -117,7 +110,7 @@ class _ChartScreenState extends State<ChartScreen> {
                     value: viewItem,
                     child: Text(viewItem.name),
                   );
-                }).toList(),
+                }),
               ],
               onChanged: (ViewItem? newValue) {
                 if (newValue != null) {
@@ -173,9 +166,8 @@ class _ChartScreenState extends State<ChartScreen> {
                 },
             ),
     )],
-      ),
-    );
-  }
+      );
+  }//buildPageContent
 
 
   void _showInfoDialog(BuildContext context, MultiChart chart) {
@@ -214,5 +206,5 @@ class _ChartScreenState extends State<ChartScreen> {
         );
       },
     );
-  }
-}
+  }//_showInfoDialog
+}//_ChartScreenState
