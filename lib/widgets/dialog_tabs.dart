@@ -159,7 +159,20 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
     return Padding(
         padding: const EdgeInsets.all(2.0),
     child: SingleChildScrollView(
-      child: DataTable(
+      child: Column(
+        children: [
+          const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child:
+                    Text('Thresholds',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    )
+                )
+              ]), // Nur eine Spalte für den Namen
+          DataTable(
         showCheckboxColumn: false,
           columnSpacing: 0,
 
@@ -192,7 +205,10 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
           );
         }).toList(),
       ),
-    ));
+    ])
+    )
+    )
+    ;
   }
 
   Widget _buildAccumulatorsTab() {
@@ -217,7 +233,7 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
                 Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child:
-                      Text('Chart name',
+                      Text('Charts',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       )
                 )
@@ -232,8 +248,12 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(accumulator.name,
-                        style: TextStyle(overflow: TextOverflow.ellipsis),
+                      Expanded(
+                        child: Text(
+                          accumulator.name,
+                          style: const TextStyle(fontSize: 14, overflow: TextOverflow.ellipsis),
+                          maxLines: 1, // Nur eine Zeile anzeigen
+                        ),
                       ),
 
                     ],
@@ -401,17 +421,27 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Component Info',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                const Text(
+                  'Component Info',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
             const SizedBox(height: 8),
             _buildInfoSection(componentInfo!.data),
 
             const SizedBox(height: 16),
-            const Text(
-              'Connector Info',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                const Text(
+                  'Connector Info',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
             const SizedBox(height: 8),
             _buildInfoSection(connectorInfo!.data),

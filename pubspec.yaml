@@ -46,6 +46,8 @@ dependencies:
   provider: ^6.1.2
   collection: ^1.17.0
   flutter_html: ^3.0.0-beta.2
+  flutter_native_splash: ^2.4.4
+  url_launcher: ^6.2.1
 
 dev_dependencies:
   flutter_test:
@@ -108,3 +110,13 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+  
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/splash.jpg  # Hochauflösendes Bild
+  android: true
+  ios: true
+
+  android_12:
+    image: assets/splash.jpg
+    icon_background_color: "#FFFFFF"

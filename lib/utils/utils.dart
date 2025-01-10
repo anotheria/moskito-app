@@ -4,6 +4,34 @@ class AppUtils{
 
   static const double circleBoxSize = 16;
 
+  static const chartColors = [
+    Colors.blue,
+    Colors.red,
+    Colors.green,
+    Colors.orange,
+    Colors.purple,
+    Colors.teal,
+    Colors.brown,
+    Colors.pink,
+    Colors.amber,
+    Colors.cyan,
+    Colors.indigo,
+    Colors.lime,
+    Colors.deepOrange,
+    Colors.deepPurple,
+    Colors.lightBlue,
+    Colors.lightGreen,
+    Colors.yellow,
+    Colors.grey,
+    Colors.blueGrey,
+
+  ];
+
+  static Color getChartColor(int chartIndex) {
+    return chartColors[chartIndex % chartColors.length];
+  }
+
+
   static Color parseColor(String colorString) {
     colorString = colorString.toUpperCase();
     switch (colorString) {

@@ -3,6 +3,7 @@ import 'package:moskito_control/models/chart_point.dart';
 import 'package:moskito_control/screens/base_page.dart';
 import 'dart:async';
 import 'package:moskito_control/services/api_service.dart';
+import 'package:moskito_control/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import '../models/view.dart';
@@ -26,28 +27,6 @@ class _ChartScreenState extends BasePageState<ChartScreen> {
   List<MultiChart> charts = [];
   bool isLoading = true;
   Timer? _timer;
-  final colors = [
-    Colors.blue,
-    Colors.red,
-    Colors.green,
-    Colors.orange,
-    Colors.purple,
-    Colors.teal,
-    Colors.brown,
-    Colors.pink,
-    Colors.amber,
-    Colors.cyan,
-    Colors.indigo,
-    Colors.lime,
-    Colors.deepOrange,
-    Colors.deepPurple,
-    Colors.lightBlue,
-    Colors.lightGreen,
-    Colors.yellow,
-    Colors.grey,
-    Colors.blueGrey,
-
-  ];
 
   @override
   void initState() {
@@ -185,12 +164,19 @@ class _ChartScreenState extends BasePageState<ChartScreen> {
                     width: 12,
                     height: 12,
                     decoration: BoxDecoration(
-                      color: colors[index % colors.length],
-                      shape: BoxShape.circle,
+                      color: AppUtils.getChartColor(index),
+                      shape: BoxShape.rectangle,
                     ),
                   ),
                   const SizedBox(width: 8),
-                  Text(chart.lineNames[index]),
+                  Expanded(
+                    child: Text(
+                      chart.lineNames[index],
+                      style: const TextStyle(fontSize: 16, overflow: TextOverflow.ellipsis),
+                      maxLines: 1, // Nur eine Zeile anzeigen
+                    ),
+                  ),
+
                 ],
               );
             }),

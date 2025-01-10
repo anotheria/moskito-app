@@ -10,11 +10,11 @@ import '../models/accumulator.dart';
 import '../models/chart_point.dart';
 
 class ApiService {
-  //static const String _baseUrl = 'https://burgershop-control.demo.moskito.org/api/v2';
+  static String baseUrl = 'https://burgershop-control.demo.moskito.org/api/v2';
 
   static const _urlKey = 'baseUrl';
 
-  static String baseUrl = 'https://moskito-control.thecasuallounge.com/api/v2'; //default
+  //static String baseUrl = 'https://moskito-control.thecasuallounge.com/api/v2'; //default
 
 
   static Future<void> initialize() async {
@@ -91,7 +91,7 @@ class ApiService {
       final thresholdsList = decodedJson['results']['thresholds'] as List<dynamic>;
       return thresholdsList.map((json) => MoSKitoThreshold.fromJson(json)).toList();
     } else {
-      throw Exception('Fehler beim Abrufen der Daten: ${response.statusCode}');
+      throw Exception('Error fetching thresholds: ${response.statusCode}');
     }
   }
 
