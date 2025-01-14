@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:moskito_control/main.dart';
 import 'package:provider/provider.dart';
 import '../services/api_service.dart';
-import '../widgets/item_list.dart';
+import '../widgets/statuses_widget.dart';
 import '../models/view.dart';
 import 'base_page.dart';
 import 'system_selection.dart';
@@ -64,7 +64,7 @@ class _HomeScreenState extends BasePageState<HomeScreen> {
     return Scaffold(
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : ItemList(data: views),
+          : StatusesWidget(data: views),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final selectedSystemURL = await Navigator.push(

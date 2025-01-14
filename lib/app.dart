@@ -16,12 +16,16 @@ class MyApp extends StatelessWidget {
       appBarTheme: AppBarTheme(
         backgroundColor: Color(0xFF6C9FD7),
         iconTheme: IconThemeData(color: Colors.white),
-        titleTextStyle: TextStyle(color: Colors.white, fontSize: 20),
+        titleTextStyle: TextStyle(color: Colors.white, fontSize: 20, fontFamily: 'PTMono'),
       ),
       textTheme: const TextTheme(
-        bodyLarge: TextStyle(color: Colors.grey), // Ersetzt bodyText1
-        bodyMedium: TextStyle(color: Colors.grey), // Ersetzt bodyText2
-        headlineSmall: TextStyle(color: Colors.white), // Ersetzt headline6
+        bodyLarge: TextStyle(color: Colors.grey, fontFamily: 'PTMono',  fontSize: 14), // Ersetzt bodyText1
+        bodyMedium: TextStyle(color: Colors.grey, fontFamily: 'PTMono', fontSize: 12), // Ersetzt bodyText2
+        bodySmall: TextStyle(fontFamily: 'PTMono'),
+        headlineSmall: TextStyle(color: Colors.white, fontFamily: 'PTMono'), // Ersetzt headline6
+        titleLarge: TextStyle(fontFamily: 'PTMono'),
+        titleMedium: TextStyle(fontFamily: 'PTMono'),
+        titleSmall: TextStyle(fontFamily: 'PTMono'),
       ),
       iconTheme: IconThemeData(color: Colors.grey.shade300),
       cardColor: Colors.grey.shade800,

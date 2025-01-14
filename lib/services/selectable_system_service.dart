@@ -19,6 +19,20 @@ class SelectableSystemService {
     return encodedSystems.map((e) => SelectableSystem.fromJson(jsonDecode(e))).toList();
   }
 
+  Future<SelectableSystem> getSystem(String name) async {
+    final systems = await getSystems();
+    return systems.firstWhere((system) => system.name == name, orElse: () => SelectableSystem(name: '', url: ''));
+  }
+
+  Future<void> updateSystem(String name, String url) async {
+    final systems = await getSystems();
+    final index = systems.indexWhere((system) => system.name == name);
+    if (index != -1) {
+      systems[index] = SelectableSystem(name: name, url: url);
+      await saveSystems(systems);
+    }
+  }
+
   // Adds a system.
   Future<void> addSystem(SelectableSystem system) async {
     final systems = await getSystems();

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppUtils{
 
-  static const double circleBoxSize = 16;
+  static const double circleBoxSize = 12;
 
   static const chartColors = [
     Colors.blue,

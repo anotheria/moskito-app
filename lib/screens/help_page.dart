@@ -44,6 +44,18 @@ class HelpPage extends StatelessWidget {
           } else {
             return SingleChildScrollView(
               child: Html(
+                style: {
+                  "p": Style(
+                    fontFamily: Theme.of(context).textTheme.bodyMedium?.fontFamily,
+                    fontSize: FontSize(12),
+                    color: Colors.white,
+                  ),
+                  "h2": Style(
+                    fontFamily: Theme.of(context).textTheme.headlineMedium?.fontFamily,
+                    fontSize: FontSize(16),
+                    color: Colors.white,
+                  ),
+                },
                   data: snapshot.data,
                 onLinkTap: (url, attributes, element) {
                   if (url != null) {

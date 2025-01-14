@@ -49,6 +49,11 @@ class _SettingsScreenState extends BasePageState<SettingsScreen> {
     await fetchData();
   }
 
+  Future<void> updateSystem(String name, String url) async {
+    await _service.updateSystem(name, url);
+    await fetchData();
+  }
+
   Future<void> deleteSystem(String name) async {
     await _service.removeSystem(name);
     await fetchData();
@@ -68,12 +73,23 @@ class _SettingsScreenState extends BasePageState<SettingsScreen> {
               return ListTile(
                 title: Text(system.name),
                 subtitle: Text(system.url),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () async {
-                    await deleteSystem(system.name);
-                  },
-                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: ()  => _showEditSystemDialog(context, system.name, system.url),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () async {
+                        await deleteSystem(system.name);
+                      },
+
+                    ),
+
+                  ],
+                )
               );
             },
           ),
@@ -133,4 +149,54 @@ class _SettingsScreenState extends BasePageState<SettingsScreen> {
       },
     );
   }//_showAddSystemDialog
+
+
+void _showEditSystemDialog(BuildContext context, String name, String url) {
+  final nameController = TextEditingController();
+  final urlController = TextEditingController();
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      nameController.text = name;
+      urlController.text = url;
+
+      return AlertDialog(
+        title: const Text('Edit System'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(labelText: 'System Name'),
+              readOnly: true,
+            ),
+            TextField(
+              controller: urlController,
+              decoration: const InputDecoration(labelText: 'System URL'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final name = nameController.text;
+              final url = urlController.text;
+
+              if (name.isNotEmpty && url.isNotEmpty) {
+                await updateSystem(name, url);
+                Navigator.of(context).pop();
+              }
+            },
+            child: const Text('Update'),
+          ),
+        ],
+      );
+    },
+  );
+}//_showAddSystemDialog
 }//_SettingsPageState

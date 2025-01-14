@@ -38,7 +38,7 @@ class HistoryItem {
     // Konvertiere den ISO-Timestamp in ein DateTime-Objekt
     final DateTime dateTime = DateTime.parse(isoTimestamp);
 
-    // Definiere das gewünschte Format
+    // Define the date format.
     final DateFormat formatter = DateFormat('dd.MM HH:mm:ss');
 
     // Formatiere das Datum
