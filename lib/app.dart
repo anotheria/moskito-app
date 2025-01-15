@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       ),
       textTheme: const TextTheme(
         bodyLarge: TextStyle(color: Colors.grey, fontFamily: 'PTMono',  fontSize: 14), // Ersetzt bodyText1
-        bodyMedium: TextStyle(color: Colors.grey, fontFamily: 'PTMono', fontSize: 12), // Ersetzt bodyText2
+        bodyMedium: TextStyle(color: Colors.white, fontFamily: 'PTMono', fontSize: 12), // Ersetzt bodyText2
         bodySmall: TextStyle(fontFamily: 'PTMono'),
         headlineSmall: TextStyle(color: Colors.white, fontFamily: 'PTMono'), // Ersetzt headline6
         titleLarge: TextStyle(fontFamily: 'PTMono'),

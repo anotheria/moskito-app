@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class AppUtils{
 
   static const double circleBoxSize = 12;
+  static const double smallCircleBoxSize = 8;
 
   static const chartColors = [
     Colors.blue,
@@ -29,6 +30,10 @@ class AppUtils{
 
   static Color getChartColor(int chartIndex) {
     return chartColors[chartIndex % chartColors.length];
+  }
+
+  static Color getAppBarColor(){
+    return Colors.grey.shade900;
   }
 
 
@@ -61,6 +66,20 @@ class AppUtils{
     );
   }
 
+  static Container getSmallStatusCircle(String colorString) {
+    return Container(
+      width: smallCircleBoxSize,
+      height: smallCircleBoxSize,
+      decoration: BoxDecoration(
+        color: parseColor(colorString),
+        shape: BoxShape.circle,
+      ),
+    );
+  }
+
+  static Icon getSmallRightArrow(){
+    return const Icon(Icons.arrow_forward, size: 10);
+  }
 
 
 }

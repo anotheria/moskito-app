@@ -3,6 +3,8 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../utils/utils.dart';
+
 
 class HelpPage extends StatelessWidget {
   final String helpFilePath;
@@ -32,7 +34,7 @@ class HelpPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Help"),
-        backgroundColor: const Color(0xFF6C9FD7),
+        backgroundColor: AppUtils.getAppBarColor(),
       ),
       body: FutureBuilder<String>(
         future: loadHelpContent(),

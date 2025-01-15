@@ -26,11 +26,11 @@ class HistoryWidget extends StatelessWidget {
                     children: [
                       Text(item.formatedTimestamp),
                       const SizedBox(width: 16),
-                      AppUtils.getStatusCircle(item.oldStatus),
+                      AppUtils.getSmallStatusCircle(item.oldStatus),
                       const SizedBox(width: 8),
-                      const Icon(Icons.arrow_forward, size: 14),
+                      AppUtils.getSmallRightArrow(),
                       const SizedBox(width: 8),
-                      AppUtils.getStatusCircle(item.newStatus),
+                      AppUtils.getSmallStatusCircle(item.newStatus),
                       const SizedBox(width: 16),
                       Text(item.componentName),
                     ],
@@ -49,7 +49,7 @@ class HistoryWidget extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("${item.componentName} Status Change"),
+          title: Text("${item.componentName} status change"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,11 +57,11 @@ class HistoryWidget extends StatelessWidget {
               Padding(padding: EdgeInsets.symmetric(vertical: 8.0),
               child: Row(
                 children: [
-                  AppUtils.getStatusCircle(item.oldStatus),
-                  const SizedBox(width: 16),
-                  const Icon(Icons.arrow_forward, size: 14,),
-                  const SizedBox(width: 16),
-                  AppUtils.getStatusCircle(item.newStatus),
+                  AppUtils.getSmallStatusCircle(item.oldStatus),
+                  const SizedBox(width: AppUtils.circleBoxSize-1),
+                  AppUtils.getSmallRightArrow(),
+                  const SizedBox(width: AppUtils.circleBoxSize-1),
+                  AppUtils.getSmallStatusCircle(item.newStatus),
                 ],
               )),
         Padding(padding: EdgeInsets.symmetric(vertical: 4.0),

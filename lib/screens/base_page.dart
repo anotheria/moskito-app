@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:moskito_control/utils/utils.dart';
 import 'dart:io';
 import '../main.dart';
 import 'package:flutter/services.dart'; // For rootBundle
@@ -23,7 +24,7 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF6C9FD7),
+        backgroundColor: AppUtils.getAppBarColor(),// const Color(0xFF6C9FD7),
         title: ValueListenableBuilder<String>(
           valueListenable: selectedSystemNameGlobal,
           builder: (context, value, child) {

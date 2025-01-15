@@ -128,7 +128,7 @@ class _ChartScreenState extends BasePageState<ChartScreen> {
                                     fontSize: 18, fontWeight: FontWeight.bold),
                                 ),
                                   IconButton(
-                                    icon:  const Icon(Icons.info_outline, color: Colors.grey),
+                                    icon:  const Icon(Icons.info_outline, color: Colors.white),
                                     onPressed: () {
                                       _showInfoDialog(context, charts[index]);
                                     },
@@ -172,7 +172,7 @@ class _ChartScreenState extends BasePageState<ChartScreen> {
                   Expanded(
                     child: Text(
                       chart.lineNames[index],
-                      style: const TextStyle(fontSize: 16, overflow: TextOverflow.ellipsis),
+                      style: const TextStyle( overflow: TextOverflow.ellipsis),
                       maxLines: 1, // Nur eine Zeile anzeigen
                     ),
                   ),

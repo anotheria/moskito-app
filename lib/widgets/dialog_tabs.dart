@@ -109,7 +109,7 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
             width: double.infinity, // Full width
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             decoration: BoxDecoration(
-              color: Color(0xFF6C9FD7), // Hintergrundfarbe
+              color: AppUtils.getAppBarColor(), //Color(0xFF6C9FD7),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(16),
                 topRight: Radius.circular(16),
@@ -156,7 +156,9 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
       return const Center(child: CircularProgressIndicator());
     }
 
-    return Padding(
+    return
+
+      Padding(
         padding: const EdgeInsets.all(2.0),
     child: SingleChildScrollView(
       child: Column(
@@ -165,47 +167,49 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child:
                     Text('Thresholds',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     )
                 )
               ]), // Nur eine Spalte für den Namen
-          DataTable(
-        showCheckboxColumn: false,
-          columnSpacing: 0,
+          Align(
+            alignment: Alignment.centerLeft,
+            child:
+          Wrap(
+            spacing: 6.0,
+            runSpacing: 4.0,
+            alignment: WrapAlignment.start,
+            children: thresholds.map((threshold) {
+              final componentColor = AppUtils.parseColor(threshold.status);
 
-        columns: const [
-          DataColumn(label: Text('Name')),
-          DataColumn(label: Text('Value')),
-        ],
-        rows: thresholds.map((threshold) {
-          return DataRow(
-            cells: [
-              DataCell(
-                Row(
+              return
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0), // Subtle padding for balance
+                  child:
+                    GestureDetector(
+
+                onTap: () {
+                  _showThresholdDetailsDialog(threshold);
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-
-                  AppUtils.getStatusCircle(threshold.status),
-                  Text(' '+threshold.name,
-                    overflow: TextOverflow.ellipsis, // Hier anwenden, um den Text abzuschneiden
-                  )
-                  ]
+                    Icon(Icons.circle, color: componentColor, size: 8),
+                    const SizedBox(width: 4),
+                    Text(
+                      "${threshold.name} (${threshold.lastValue})",
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ],
                 ),
-              ),
-
-              DataCell(Text(threshold.lastValue)),
-            ],
-            onSelectChanged: (selected) {
-              if (selected ?? false) {
-                _showThresholdDetailsDialog(threshold);
-              }
-            },
-          );
-        }).toList(),
-      ),
-    ])
+                    )
+                );
+            }).toList(),
+          ),)
+  ])
     )
     )
     ;
@@ -243,7 +247,7 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
                 GestureDetector(
                 child:
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
                   child:
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -251,7 +255,7 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
                       Expanded(
                         child: Text(
                           accumulator.name,
-                          style: const TextStyle(fontSize: 14, overflow: TextOverflow.ellipsis),
+                          style: const TextStyle(overflow: TextOverflow.ellipsis),
                           maxLines: 1, // Nur eine Zeile anzeigen
                         ),
                       ),
@@ -320,20 +324,25 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
           ...historyItems.map((item) {
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Row(
+            child: GestureDetector(
+                    onTap: () {
+                      _showHistoryDetailsDialog(item);
+                    },
+                child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 const SizedBox(width: 10),
-                AppUtils.getStatusCircle(item.oldStatus),
+                AppUtils.getSmallStatusCircle(item.oldStatus),
                 const SizedBox(width: 4),
-                const Icon(Icons.arrow_forward, size: 14,), // Arrow icon
+                const Icon(Icons.arrow_forward, size: AppUtils.smallCircleBoxSize,), // Arrow icon
                 const SizedBox(width: 4),
-                AppUtils.getStatusCircle(item.newStatus),
+                AppUtils.getSmallStatusCircle(item.newStatus),
                 const SizedBox(width: AppUtils.circleBoxSize), // Space between status circles
                 Text(item.isoTimestamp), // Display the timestamp
 
               ],
             ),
+          )
           );
         }).toList(),
       ]),
@@ -365,6 +374,46 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
       },
     );
   }
+
+  void _showHistoryDetailsDialog(HistoryItem item) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(item.componentName, textAlign: TextAlign.left),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(padding: EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    children: [
+                      AppUtils.getSmallStatusCircle(item.oldStatus),
+                      const SizedBox(width: AppUtils.circleBoxSize-1),
+                      AppUtils.getSmallRightArrow(),
+                      const SizedBox(width: AppUtils.circleBoxSize-1),
+                      AppUtils.getSmallStatusCircle(item.newStatus),
+                    ],
+                  )),
+              Padding(padding: EdgeInsets.symmetric(vertical: 4.0),
+                child: Text("Old Messages: ${item.oldMessages.join(", ")}"),),
+              Padding(padding: EdgeInsets.symmetric(vertical: 4.0),
+                child: Text("New Messages: ${item.newMessages.join(", ")}"),),
+              Padding(padding: EdgeInsets.symmetric(vertical: 4.0),
+                child: Text("Timestamp: ${item.isoTimestamp}"),)
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 
   Widget _buildDetailRow(String label, String value) {
     return Padding(
@@ -473,7 +522,8 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
             children: [
               Text(
                 '${entry.key}: ',
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.yellow,),
+
               ),
               Expanded(
                 child: Text(entry.value.toString(),
