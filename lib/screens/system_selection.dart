@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moskito_control/utils/utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../main.dart';
 import '../services/selectable_system_service.dart';
@@ -56,7 +57,7 @@ class _SystemSelectionPageState extends State<SystemSelectionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF6C9FD7),
+        backgroundColor: AppUtils.getAppBarColor(),
         title: const Text("Select System"),
       ),
       body: isLoading
