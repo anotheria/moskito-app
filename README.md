@@ -1,6 +1,8 @@
-# my_first_app
+# MoSKito Monitoring App
 
-A new Flutter project.
+**MoSKito Monitoring** is your mobile companion for real-time performance monitoring of Java-based systems. Seamlessly connect to multiple MoSKito-Control instances and stay informed about the health and performance of your applications—anytime, anywhere.
+
+
 
 ## Getting Started
 
