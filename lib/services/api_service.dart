@@ -139,7 +139,11 @@ class ApiService {
     if (response.statusCode == 200) {
       return ComponentInfo.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('Failed to load connector info: ${response.statusCode}');
+      var data = {"Error": "Failed to load connector info."};
+      data['StatusCode'] = '${response.statusCode}';
+      data['Reason'] = '${response.reasonPhrase}';
+      data['Body'] = '${response.body}';
+      return ComponentInfo(data: data);
     }
   }
 
