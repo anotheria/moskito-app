@@ -31,3 +31,8 @@ Designed for quick navigation and real-time decision-making, ensuring critical i
  # Building 
 
  MoSKito Monitoring App is a Flutter-App. Check out the code and run with ```flutter run```
+
+# iOS Support
+
+Check out our [iOS Support Page](https://github.com/anotheria/moskito-app/wiki/iOS-Support)
+
