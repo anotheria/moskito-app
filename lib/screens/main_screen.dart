@@ -13,10 +13,10 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    HomeScreen(), // Dein Home Screen
-    HistoryScreen(), // Dein History Screen
-    ChartScreen(), // Der Dummy-Screen
-    SettingsScreen(), // Der Dummy-Screen
+    HomeScreen(),
+    HistoryScreen(),
+    ChartScreen(),
+    SettingsScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -33,6 +33,7 @@ class _MainScreenState extends State<MainScreen> {
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        selectedItemColor: Colors.yellow,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
