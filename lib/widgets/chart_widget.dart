@@ -1,32 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:moskito_control/utils/utils.dart';
 import '../models/chart_point.dart';
 
 class MultiChartWidget extends StatelessWidget {
   final MultiChart chart;
-
-  final colors = [
-    Colors.blue,
-    Colors.red,
-    Colors.green,
-    Colors.orange,
-    Colors.purple,
-    Colors.teal,
-    Colors.brown,
-    Colors.pink,
-    Colors.amber,
-    Colors.cyan,
-    Colors.indigo,
-    Colors.lime,
-    Colors.deepOrange,
-    Colors.deepPurple,
-    Colors.lightBlue,
-    Colors.lightGreen,
-    Colors.yellow,
-    Colors.grey,
-    Colors.blueGrey,
-
-  ];
 
    MultiChartWidget({super.key, required this.chart});
 
@@ -94,7 +72,7 @@ class MultiChartWidget extends StatelessWidget {
               return touchedSpots.map((touchedSpot) {
                 return LineTooltipItem(
                   chart.lineNames[touchedSpot.barIndex] + ': ' + formatYAxisLabel(touchedSpot.y),
-                   TextStyle(color: colors[touchedSpot.barIndex % colors.length],
+                   TextStyle(color: AppUtils.getChartColor(touchedSpot.barIndex),
                     fontWeight: FontWeight.bold,
                     //backgroundColor: Colors.grey, // Adjust tooltip background color here
                   ),
@@ -126,7 +104,7 @@ class MultiChartWidget extends StatelessWidget {
         isCurved: true,
         dotData: FlDotData(show: false),
         belowBarData: BarAreaData(show: false),
-        color: colors[lineIndex % colors.length],
+        color: AppUtils.getChartColor(lineIndex),
         barWidth: 3,
       );
     });

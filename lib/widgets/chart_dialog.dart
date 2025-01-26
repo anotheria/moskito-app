@@ -1,10 +1,9 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:moskito_control/widgets/chart_dialog.dart';
+import 'package:flutter/services.dart';
 
 
-
-class ChartDialog extends StatelessWidget {
+class ChartDialog extends StatefulWidget {
   final String title;
   final List<FlSpot> chartData;
 
@@ -15,7 +14,37 @@ class ChartDialog extends StatelessWidget {
   });
 
   @override
+  _ChartDialogState createState() => _ChartDialogState();
+}
+
+class _ChartDialogState extends State<ChartDialog> {
+  @override
+  void initState() {
+    super.initState();
+    // Force landscape mode when the dialog opens
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+  }
+
+  @override
+  void dispose() {
+    // Restore portrait mode when the dialog closes
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    super.dispose();
+  }
+
+
+
+  @override
   Widget build(BuildContext context) {
+
+    var title = widget.title;
+    var chartData = widget.chartData;
 
     double xInterval = calculateDynamicInterval(chartData);
     double yInterval = calculateVerticalInterval(chartData);
@@ -77,7 +106,7 @@ class ChartDialog extends StatelessWidget {
                         },
                       ),
                     ),
-                    topTitles: AxisTitles(
+                    topTitles: const AxisTitles(
                       sideTitles: SideTitles(
                         showTitles: false, // Obere Beschriftungen deaktivieren
                       ),

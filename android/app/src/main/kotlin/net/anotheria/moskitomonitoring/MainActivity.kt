@@ -1,4 +1,4 @@
-package com.example.my_first_app
+package net.anotheria.moskitomonitoring
 
 import io.flutter.embedding.android.FlutterActivity
 

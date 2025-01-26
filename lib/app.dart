@@ -32,6 +32,7 @@ class MyApp extends StatelessWidget {
     );
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'MoSKito',
       /*theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),

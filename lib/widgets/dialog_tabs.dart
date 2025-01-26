@@ -277,6 +277,7 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
                       if (mounted) {
                         Navigator.of(context).push(
                           MaterialPageRoute(
+                              fullscreenDialog: true,
                               builder: (context) => ChartDialog(
                                 title: accumulator.name,
                                 chartData: chartData,
