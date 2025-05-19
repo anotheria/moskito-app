@@ -5,18 +5,35 @@ import 'chart_screen.dart'; // Der Dummy-Screen
 import 'settings.dart'; // Der Dummy-Screen
 
 class MainScreen extends StatefulWidget {
+  final void Function(BuildContext settingsContext)? initialSettingsEdit;
+
+  MainScreen({Key? key, this.initialSettingsEdit}) : super(key: key);
+
   @override
-  _MainScreenState createState() => _MainScreenState();
+  MainScreenState createState() => MainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class MainScreenState extends State<MainScreen> {
+  BuildContext? _settingsContext;
   int _selectedIndex = 0;
+  SettingsScreenState? settingsState;
 
-  final List<Widget> _screens = [
+  List<Widget> get _screens => [
     HomeScreen(),
     HistoryScreen(),
     ChartScreen(),
-    SettingsScreen(),
+    Builder(
+      builder: (context) {
+        _settingsContext = context;
+        // Führe initialSettingsEdit beim erstmaligen Aufbau von SettingsScreen aus
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (_selectedIndex == 3 && widget.initialSettingsEdit != null) {
+            widget.initialSettingsEdit!(context);
+          }
+        });
+        return SettingsScreen();
+      },
+    ),
   ];
 
   void _onItemTapped(int index) {
@@ -54,5 +71,19 @@ class _MainScreenState extends State<MainScreen> {
         ],
       ),
     );
+  }
+  void openSettingsAndConfigure(String name, String url) {
+    setState(() {
+      _selectedIndex = 3; // Settings-Tab aktivieren
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final state = settingsState;
+      if (state != null) {
+        state.showAddSystemFromDeepLink(name, url);
+      } else {
+        print("SettingsScreenState nicht gefunden.");
+      }
+    });
   }
 }

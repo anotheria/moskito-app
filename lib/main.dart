@@ -1,15 +1,19 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'app.dart';
 import 'services/api_service.dart';
 import 'states/view_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:uni_links/uni_links.dart';
 
 ValueNotifier<String> selectedSystemNameGlobal = ValueNotifier<String>("Default System");
 
+Uri? initialLinkUri;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   await ApiService.initialize(); // URLs laden
 
   // Load saved System name.
@@ -17,6 +21,11 @@ void main() async {
   final savedSystemName = prefs.getString('selectedSystemName') ?? "Default System";
   selectedSystemNameGlobal.value = savedSystemName;
 
+  try {
+    initialLinkUri = await getInitialUri();
+  } catch (e) {
+    print('Fehler beim Laden des Initial-Links: $e');
+  }
 
 
   runApp(
@@ -26,5 +35,6 @@ void main() async {
     ),
   );
 
-}
 
+
+}

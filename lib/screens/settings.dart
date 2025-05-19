@@ -3,6 +3,7 @@ import 'dart:async';
 import '../services/selectable_system_service.dart';
 import '../models/selectable_system.dart';
 import 'base_page.dart';
+import 'main_screen.dart';
 
 class SettingsScreen extends BasePage {
   const SettingsScreen({Key? key})
@@ -13,11 +14,17 @@ class SettingsScreen extends BasePage {
     showSystem: false,
   );
 
+  static SettingsScreenState? of(BuildContext context) {
+    final state = context.findAncestorStateOfType<SettingsScreenState>();
+    return state;
+  }
+
+
   @override
-  _SettingsScreenState createState() => _SettingsScreenState();
+  SettingsScreenState createState() => SettingsScreenState();
 }
 
-class _SettingsScreenState extends BasePageState<SettingsScreen> {
+class SettingsScreenState extends BasePageState<SettingsScreen> {
   final SelectableSystemService _service = SelectableSystemService();
   List<SelectableSystem> _systems = [];
   bool isLoading = false;
@@ -25,8 +32,10 @@ class _SettingsScreenState extends BasePageState<SettingsScreen> {
   @override
   void initState() {
     super.initState();
+    final mainScreenState = context.findAncestorStateOfType<MainScreenState>();
     fetchData();
-  }
+    mainScreenState?.settingsState = this;
+    }
 
   Future<void> fetchData() async {
     setState(() {
@@ -97,7 +106,7 @@ class _SettingsScreenState extends BasePageState<SettingsScreen> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: ElevatedButton(
-            onPressed: () => _showAddSystemDialog(context),
+            onPressed: () => _showAddSystemDialog(context, null, null),
             child: const Text('Add System'),
           ),
         ),
@@ -105,13 +114,17 @@ class _SettingsScreenState extends BasePageState<SettingsScreen> {
     );
   }
 
-  void _showAddSystemDialog(BuildContext context) {
+  void _showAddSystemDialog(BuildContext context, String? name, String? url) {
     final nameController = TextEditingController();
     final urlController = TextEditingController();
 
     showDialog(
       context: context,
       builder: (context) {
+        if (name != null)
+          nameController.text = name;
+        if (url != null)
+          urlController.text = url;
         return AlertDialog(
           title: const Text('Add System'),
           content: Column(
@@ -151,7 +164,7 @@ class _SettingsScreenState extends BasePageState<SettingsScreen> {
   }//_showAddSystemDialog
 
 
-void _showEditSystemDialog(BuildContext context, String name, String url) {
+  void _showEditSystemDialog(BuildContext context, String name, String url) {
   final nameController = TextEditingController();
   final urlController = TextEditingController();
 
@@ -198,5 +211,12 @@ void _showEditSystemDialog(BuildContext context, String name, String url) {
       );
     },
   );
-}//_showAddSystemDialog
+  }//_showAddSystemDialog
+
+  /// Makes the edit system dialog callable from outside, e.g. via deep link.
+  void showAddSystemFromDeepLink(String name, String url) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showAddSystemDialog(context, name, url);
+    });
+  }
 }//_SettingsPageState

@@ -1,9 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:moskito_control/screens/main_screen.dart';
-import 'screens/home_screen.dart';
+import 'package:uni_links/uni_links.dart';
+import '../main.dart' show initialLinkUri;
+import 'screens/main_screen.dart';
 
-class MyApp extends StatelessWidget {
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<MainScreenState> mainScreenKey = GlobalKey<MainScreenState>();
+
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+
+    if (initialLinkUri != null &&
+        initialLinkUri!.scheme == 'moskitoapp' &&
+        initialLinkUri!.host == 'config') {
+      final url = initialLinkUri!.queryParameters['url'];
+      final name = initialLinkUri!.queryParameters['name'];
+      print('Starte Konfiguration: $url, $name');
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        mainScreenKey.currentState?.openSettingsAndConfigure(name!, url!);
+      });
+    }
+
+    uriLinkStream.listen((Uri? uri) {
+      String uriString = uri.toString();
+      print("Click: "+uriString );
+      if (uri != null && uri.scheme == 'moskitoapp' && uri.host == 'config') {
+        print("In the IF");
+        final url = uri.queryParameters['url'];
+        final name = uri.queryParameters['name'];
+        print('Live-Link empfangen: $url, $name');
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          mainScreenKey.currentState?.openSettingsAndConfigure(name!, url!);
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +79,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),*/
       theme: appTheme,
-      home: MainScreen(),
+      navigatorKey: navigatorKey,
+      home: MainScreen(key: mainScreenKey),
     );
   }
 }
