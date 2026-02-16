@@ -52,7 +52,10 @@ class StatusesWidget extends StatelessWidget {
                     onTap: () {
                       showDialog(
                         context: context,
-                        builder: (context) => DialogTabs(componentName: component.name),
+                        builder: (context) => DialogTabs(
+                          componentName: component.name,
+                          component: component,
+                        ),
                       );
                     },
                     child: Row(
@@ -64,6 +67,10 @@ class StatusesWidget extends StatelessWidget {
                           component.name,
                           style: const TextStyle(color: Colors.white),
                         ),
+                        if (component.maintenanceMode) ...[
+                          const SizedBox(width: 4),
+                          const Icon(Icons.build, color: Colors.white, size: 14),
+                        ],
                       ],
                     ),
                   );

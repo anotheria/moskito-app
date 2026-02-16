@@ -5,6 +5,7 @@ import '../models/history_item.dart';
 import '../models/component_info.dart';
 import '../models/threshold.dart';
 import '../models/accumulator.dart';
+import '../models/component.dart';
 import '../utils/utils.dart';
 import 'chart_dialog.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -12,8 +13,9 @@ import 'package:flutter/services.dart'; // Für Clipboard
 
 class DialogTabs extends StatefulWidget {
   final String componentName;
+  final MoSKitoComponent component;
 
-  const DialogTabs({super.key, required this.componentName});
+  const DialogTabs({super.key, required this.componentName, required this.component});
 
   @override
   State<DialogTabs> createState() => _DialogTabsState();
@@ -28,12 +30,15 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
   ComponentInfo? connectorInfo;
 
   bool isLoading = false;
+  late bool isMaintenanceMode;
 
   @override
   void initState() {
     super.initState();
 
     //TODO actually we should check for capabilities of the component here first.
+
+    isMaintenanceMode = widget.component.maintenanceMode;
 
     _tabController = TabController(length: 4, vsync: this);
 
@@ -90,6 +95,30 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
       setState(() {
         isLoading = false;
       });
+    }
+  }
+
+  Future<void> toggleMaintenanceMode(bool value) async {
+    try {
+      if (value) {
+        await ApiService.enableMaintenanceMode(widget.componentName);
+      } else {
+        await ApiService.disableMaintenanceMode(widget.componentName);
+      }
+      setState(() {
+        isMaintenanceMode = value;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Maintenance mode ${value ? "enabled" : "disabled"}')),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to toggle maintenance mode: $e')),
+        );
+      }
     }
   }
 
@@ -154,6 +183,12 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
   Widget _buildThresholdsTab() {
     if (isLoading) {
       return const Center(child: CircularProgressIndicator());
+    }
+
+    if (thresholds.isEmpty) {
+      return const Center(
+        child: Text('No thresholds configured or component down'),
+      );
     }
 
     return
@@ -222,7 +257,7 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
 
     if (accumulators.isEmpty) {
       return const Center(
-        child: Text('No accumulators available'),
+        child: Text('No charts available'),
       );
     }
 
@@ -471,6 +506,21 @@ class _DialogTabsState extends State<DialogTabs> with SingleTickerProviderStateM
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Maintenance Mode',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                Switch(
+                  value: isMaintenanceMode,
+                  onChanged: toggleMaintenanceMode,
+                  activeTrackColor: Colors.orange,
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [

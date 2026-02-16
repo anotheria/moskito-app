@@ -169,4 +169,22 @@ class ApiService {
       throw Exception("Failed to fetch chart data: ${response.reasonPhrase}");
     }
   }
+
+  static Future<void> enableMaintenanceMode(String componentName) async {
+    final url = Uri.parse('$baseUrl/component/$componentName/maintenance/enable');
+    final response = await http.post(url);
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to enable maintenance mode: ${response.statusCode}');
+    }
+  }
+
+  static Future<void> disableMaintenanceMode(String componentName) async {
+    final url = Uri.parse('$baseUrl/component/$componentName/maintenance/disable');
+    final response = await http.post(url);
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to disable maintenance mode: ${response.statusCode}');
+    }
+  }
 }

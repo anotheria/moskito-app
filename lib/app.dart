@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:moskito_control/screens/main_screen.dart';
 import 'package:uni_links/uni_links.dart';
 import '../main.dart' show initialLinkUri;
-import 'screens/main_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<MainScreenState> mainScreenKey = GlobalKey<MainScreenState>();
@@ -52,7 +51,9 @@ class _MyAppState extends State<MyApp> {
       brightness: Brightness.dark,
       primaryColor: Colors.grey.shade800,
       scaffoldBackgroundColor: Colors.grey.shade900,
-      dialogBackgroundColor: Colors.grey.shade800,
+      dialogTheme: DialogThemeData(
+        backgroundColor: Colors.grey.shade800,
+      ),
       appBarTheme: AppBarTheme(
         backgroundColor: Color(0xFF6C9FD7),
         iconTheme: IconThemeData(color: Colors.white),

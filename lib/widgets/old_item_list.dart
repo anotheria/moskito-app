@@ -38,7 +38,10 @@ class ItemList extends StatelessWidget {
                 // Open the info dialog (accumulators, thresholds, info etc)
                 showDialog(
                   context: context,
-                  builder: (context) => DialogTabs(componentName: component.name),
+                  builder: (context) => DialogTabs(
+                    componentName: component.name,
+                    component: component,
+                  ),
                 );
               },
             );
@@ -82,7 +85,10 @@ class ItemList extends StatelessWidget {
                 // Open the info dialog (accumulators, thresholds, info etc)
                 showDialog(
                   context: context,
-                  builder: (context) => DialogTabs(componentName: component.name),
+                  builder: (context) => DialogTabs(
+                    componentName: component.name,
+                    component: component,
+                  ),
                 );
               },
             );
