@@ -47,6 +47,14 @@ class _HomeScreenState extends BasePageState<HomeScreen> {
     final viewItemState = Provider.of<ViewItemState>(context, listen: false);
     viewItemState.setViewItems(viewItems);
 
+    // Also fetch mute status
+    try {
+      final muteStatus = await ApiService.fetchMuteStatus();
+      muteStatusGlobal.value = muteStatus;
+    } catch (e) {
+      // Silently fail - mute status is optional
+    }
+
     setState(() {
       views = _views ?? [];
       isLoading = false;

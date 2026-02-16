@@ -4,10 +4,12 @@ import 'package:provider/provider.dart';
 import 'app.dart';
 import 'services/api_service.dart';
 import 'states/view_state.dart';
+import 'models/mute_status.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_links/uni_links.dart';
 
 ValueNotifier<String> selectedSystemNameGlobal = ValueNotifier<String>("Default System");
+ValueNotifier<MuteStatus?> muteStatusGlobal = ValueNotifier<MuteStatus?>(null);
 
 Uri? initialLinkUri;
 

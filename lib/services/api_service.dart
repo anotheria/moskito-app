@@ -8,6 +8,7 @@ import '../models/component_info.dart';
 import '../models/threshold.dart';
 import '../models/accumulator.dart';
 import '../models/chart_point.dart';
+import '../models/mute_status.dart';
 
 class ApiService {
   static String baseUrl = 'https://burgershop-control.demo.moskito.org/api/v2';
@@ -185,6 +186,40 @@ class ApiService {
 
     if (response.statusCode != 200) {
       throw Exception('Failed to disable maintenance mode: ${response.statusCode}');
+    }
+  }
+
+  static Future<MuteStatus?> fetchMuteStatus() async {
+    final response = await http.get(Uri.parse('$baseUrl/control'));
+
+    if (response.statusCode == 200) {
+      final decodedJson = jsonDecode(response.body);
+      if (decodedJson['results']['muteStatus'] != null) {
+        return MuteStatus.fromJson(decodedJson['results']['muteStatus']);
+      }
+      return null;
+    } else {
+      throw Exception('Error getting mute status: ${response.statusCode}');
+    }
+  }
+
+  static Future<void> muteSystem(int minutes) async {
+    print("Muting system for "+(''+minutes.toString()));
+    final url = Uri.parse('$baseUrl/notification-settings/mute/?minutes=$minutes');
+    print(url);
+    final response = await http.post(url);
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to mute system: ${response.statusCode}');
+    }
+  }
+
+  static Future<void> unmuteSystem() async {
+    final url = Uri.parse('$baseUrl/notification-settings/unmute');
+    final response = await http.post(url);
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to unmute system: ${response.statusCode} - ${response.body}');
     }
   }
 }
